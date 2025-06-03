@@ -1,14 +1,38 @@
-# Data-Oblivious-Critical-Layers
-
-## Overview
-
-This repository contains code for the **Spectral Insights into Data-Oblivious Critical Layers in Large Language Models.**
+# Spectral Insights into Data-Oblivious Critical Layers
 
 
+## Authors (centered, HTML for style)
+<p align='center' style="text-align:center;font-size:1.15em;">
+  <a href="https://xuyuan0204.github.io/" target="_blank" style="text-decoration: none;">Xuyuan Liu<sup>1</sup></a>&nbsp;,&nbsp;
+  <a href="https://hsiung.cc/" target="_blank" style="text-decoration: none;">Lei Hsiung<sup>1</sup></a>&nbsp;,&nbsp;
+  <a href="https://sites.google.com/site/yangyaoqingcmu/" target="_blank" style="text-decoration: none;">Yaoqing Yang<sup>1</sup></a>&nbsp;,&nbsp;
+  <a href="https://sites.google.com/umich.edu/yujunyan/home" target="_blank" style="text-decoration: none;">Yujun Yan<sup>1</sup></a>
+  <br/>
+  <sup>1</sup>Dartmouth College
+</p>
 
 
+<div align="center" style="display: flex; justify-content: center; gap: 2em;">
+  <a href="https://arxiv.org/abs/2506.00382" target="_blank" style="text-decoration: none; font-weight: bold; font-size:1.15em;">📄 Paper (arXiv)</a>
+  <a href="https://github.com/GraphmindDartmouth/Data-Oblivious-Critical-Layers" target="_blank" style="text-decoration: none; font-weight: bold; font-size:1.15em;">💻 Code (GitHub)</a>
+</div>
 
-### Data-oblivious Critical Layers during Finetuning
+---
+This repository contains code for **Spectral Insights into Data-Oblivious Critical Layers in Large Language Models.**
+## Background
+
+Large language models (LLMs) are remarkably good at generating and understanding text, yet we still know little about how their internal layers process information. Previous work typically identifies "important" layers only after a model has been fine-tuned on a particular dataset, making these findings inherently post-hoc and dataset-specific. But are critical layers an intrinsic property of the model, independent of specific data? If so, can we predict a model's future training behavior from its current state alone?
+
+To investigate these questions, we adopt a different approach: we analyze off-the-shelf (pre-fine-tuned) models and show that **certain layers are intrinsically more easily adapted during subsequent fine-tuning**. We further demonstrate that each layer's **Representation Dynamics** reliably predicts its behavior in subsequent training steps, regardless of the dataset used.
+
+## Data-oblivious Critical Layers & Representation Dynamics
+
+### Critical Layers Identified during Supervised Fine-Tuning
+We identify the critical layers during Supervised Fine-Tuning (SFT) by substituting each layer in the fine-tuned model with its corresponding layer from the pre-fine-tuned model, and then measuring the loss reduction of the model during SFT for each layer. High values here indicate that the layer is more sensitive during the fine-tuning steps.
+
+![Llama-2-7b's Loss reduction by layer on Dolly dataset](docs/static/images/loss_visualization/llama7b_dolly_updated.png)
+
+We find that the same model shows a **very similar pattern** in the loss curves across different datasets (high values in the middle layers, low values in the last layer), which indicates that the critical layer is determined by the pre-fine-tuned model and is independent of the fine-tuning dataset.
 
 To calculate the loss by substituting the layer centered at a given index, execute the following commands in the `./llama2` directory:
 
@@ -29,11 +53,19 @@ for ((i=2; i<=30; i+=1)); do
 done
 ```
 
-An example output substituting around the 16-th layer is provided in `./llama2/safety_evaluation/llamadolly-7b/prune_16.jsonl`.
+An example output substituting around the 16th layer is provided in `./llama2/safety_evaluation/llamadolly-7b/prune_16.jsonl`.
 
 
 
-### Representation Dynamics
+### Representation Dynamics of the Pre-fine-tuned Models
+
+We also observe that these CKA patterns and the **change-point layers** are independent of the data used to compute CKA, and are instead determined by the pre-fine-tuned model state.
+
+
+![8B BoolQ CKA Visualization](docs/static/images/8b_boolq_cka.png)
+
+
+We also observe that these CKA patterns and the **change-point layers** are independent of the data used to compute CKA, and are instead determined by the pre-fine-tuned model state.
 
 To examine representation dynamics, run:
 
@@ -41,9 +73,7 @@ To examine representation dynamics, run:
 CUDA_VISIBLE_DEVICES=0  python run_cka.py --modelname="meta-llama/Llama-2-7b-chat-hf" --dataset="pure_bad" --type="linear" --fsdp=False
 ```
 
-in the `./llama2` directory. We also povide some  visualizations example of the results, available in `/llama2/model_cka/Llama-2-7b-chat-hf`.
-
-
+in the `./llama2` directory. We also provide some example visualizations of the results, available in `/llama2/model_cka/Llama-2-7b-chat-hf`.
 
 ### Correlation
 
@@ -52,8 +82,7 @@ To check the correlation between  $\mathcal{L}\left(\mathcal{D}_{\text {test }},
 
 
 
-
-### Spectral Analysis
+## Spectral Analysis
 
 To perform spectral analysis in the model's representation space, execute the following:
 
@@ -63,6 +92,21 @@ CUDA_VISIBLE_DEVICES=0  python store_activation.py --modelname="meta-llama/Llama
 
 This command stores activations for sampled data on each layer.  To replicate Figure 3, please run `eigen_analysis.ipynb` to perform CCA analysis on the principal components. Additionally, refer to `eigen_intervene.ipynb` for implementing the Intervene method described in Section 4.2 using the example in Figure 4.
 
-### Finetuning
+## Finetuning
 
 For model finetuning, we have built upon the official Llama2 finetuning guidelines ([llama-recipes](https://github.com/facebookresearch/llama-recipes)) with adaptive changes for the Phi/Llama3 model.
+
+
+
+```bibtex
+@misc{liu2025spectralinsightsdataobliviouscritical,
+  title={Spectral Insights into Data-Oblivious Critical Layers in Large Language Models}, 
+  author={Xuyuan Liu and Lei Hsiung and Yaoqing Yang and Yujun Yan},
+  year={2025},
+  eprint={2506.00382},
+  archivePrefix={arXiv},
+  primaryClass={cs.LG},
+  url={https://arxiv.org/abs/2506.00382}, 
+}
+```
+
