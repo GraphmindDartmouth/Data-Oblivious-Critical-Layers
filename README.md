@@ -103,6 +103,8 @@ For model finetuning, we have built upon the official Llama2 finetuning guidelin
 
 
 
+If you find our work helpful, please cite it as:
+
 ```bibtex
 @misc{liu2025spectralinsightsdataobliviouscritical,
   title={Spectral Insights into Data-Oblivious Critical Layers in Large Language Models}, 
