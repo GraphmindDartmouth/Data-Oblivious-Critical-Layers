@@ -1,7 +1,7 @@
 # Spectral Insights into Data-Oblivious Critical Layers
 
 
-## Authors (centered, HTML for style)
+
 <p align='center' style="text-align:center;font-size:1.15em;">
   <a href="https://xuyuan0204.github.io/" target="_blank" style="text-decoration: none;">Xuyuan Liu<sup>1</sup></a>&nbsp;,&nbsp;
   <a href="https://hsiung.cc/" target="_blank" style="text-decoration: none;">Lei Hsiung<sup>1</sup></a>&nbsp;,&nbsp;
@@ -10,8 +10,6 @@
   <br/>
   <sup>1</sup>Dartmouth College
 </p>
-
-
 <div align="center" style="display: flex; justify-content: center; gap: 2em;">
   <a href="https://arxiv.org/abs/2506.00382" target="_blank" style="text-decoration: none; font-weight: bold; font-size:1.15em;">📄 Paper (arXiv)</a>
   <a href="https://github.com/GraphmindDartmouth/Data-Oblivious-Critical-Layers" target="_blank" style="text-decoration: none; font-weight: bold; font-size:1.15em;">💻 Code (GitHub)</a>
@@ -30,9 +28,7 @@ To investigate these questions, we adopt a different approach: we analyze off-th
 ### Critical Layers Identified during Supervised Fine-Tuning
 We identify the critical layers during Supervised Fine-Tuning (SFT) by substituting each layer in the fine-tuned model with its corresponding layer from the pre-fine-tuned model, and then measuring the loss reduction of the model during SFT for each layer. High values here indicate that the layer is more sensitive during the fine-tuning steps.
 
-![Llama-2-7b's Loss reduction by layer on Dolly dataset](docs/static/images/loss_visualization/llama7b_dolly_updated.png)
-
-We find that the same model shows a **very similar pattern** in the loss curves across different datasets (high values in the middle layers, low values in the last layer), which indicates that the critical layer is determined by the pre-fine-tuned model and is independent of the fine-tuning dataset.
+<img src="docs/static/images/loss_visualization/llama7b_dolly_updated.png" alt="Llama-2-7b's Loss reduction by layer on Dolly dataset" style="zoom:50%;" />
 
 To calculate the loss by substituting the layer centered at a given index, execute the following commands in the `./llama2` directory:
 
@@ -61,11 +57,7 @@ An example output substituting around the 16th layer is provided in `./llama2/sa
 
 We also observe that these CKA patterns and the **change-point layers** are independent of the data used to compute CKA, and are instead determined by the pre-fine-tuned model state.
 
-
-![8B BoolQ CKA Visualization](docs/static/images/8b_boolq_cka.png)
-
-
-We also observe that these CKA patterns and the **change-point layers** are independent of the data used to compute CKA, and are instead determined by the pre-fine-tuned model state.
+<img src="docs/static/images/8b_boolq_cka.png" alt="8B BoolQ CKA Visualization" style="zoom:40%;" />
 
 To examine representation dynamics, run:
 
@@ -74,6 +66,8 @@ CUDA_VISIBLE_DEVICES=0  python run_cka.py --modelname="meta-llama/Llama-2-7b-cha
 ```
 
 in the `./llama2` directory. We also provide some example visualizations of the results, available in `/llama2/model_cka/Llama-2-7b-chat-hf`.
+
+
 
 ### Correlation
 
@@ -90,7 +84,17 @@ To perform spectral analysis in the model's representation space, execute the fo
 CUDA_VISIBLE_DEVICES=0  python store_activation.py --modelname="meta-llama/Llama-2-7b-chat-hf" --dataset="dolly" --fsdp=True
 ```
 
-This command stores activations for sampled data on each layer.  To replicate Figure 3, please run `eigen_analysis.ipynb` to perform CCA analysis on the principal components. Additionally, refer to `eigen_intervene.ipynb` for implementing the Intervene method described in Section 4.2 using the example in Figure 4.
+This command stores activations for sampled data on each layer. To replicate Figure 3, 
+
+![Llama-2-7b's Loss reduction by layer on Dolly dataset](docs/static/images/combined_res.png)
+
+please run `eigen_analysis.ipynb` to perform CCA analysis on the principal components.
+
+Additionally, refer to `eigen_intervene.ipynb` for implementing the principal component removal method described in Section 4.2 to examine how semantic information is stored in these components.
+
+![Llama-2-7b's Loss reduction by layer on Dolly dataset](docs/static/images/CaseStudyExample.jpg)
+
+
 
 ## Finetuning
 
