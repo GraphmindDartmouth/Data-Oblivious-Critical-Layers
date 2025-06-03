@@ -12,8 +12,9 @@
 </p>
 <div align="center" style="display: flex; justify-content: center; gap: 2em;">
   <a href="https://arxiv.org/abs/2506.00382" target="_blank" style="text-decoration: none; font-weight: bold; font-size:1.15em;">📄 Paper (arXiv)</a>
-  <a href="https://github.com/GraphmindDartmouth/Data-Oblivious-Critical-Layers" target="_blank" style="text-decoration: none; font-weight: bold; font-size:1.15em;">💻 Code (GitHub)</a>
+  <a href="https://graphminddartmouth.github.io/Data-Oblivious-Critical-Layers/" target="_blank" style="text-decoration: none; font-weight: bold; font-size:1.15em;">💻 Project Page</a>
 </div>
+
 
 ---
 This repository contains code for **Spectral Insights into Data-Oblivious Critical Layers in Large Language Models.**
