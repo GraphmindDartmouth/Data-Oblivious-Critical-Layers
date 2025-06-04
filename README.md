@@ -24,9 +24,56 @@ Large language models (LLMs) are remarkably good at generating and understanding
 
 To investigate these questions, we adopt a different approach: we analyze off-the-shelf (pre-fine-tuned) models and show that **certain layers are intrinsically more easily adapted during subsequent fine-tuning**. We further demonstrate that each layer's **Representation Dynamics** reliably predicts its behavior in subsequent training steps, regardless of the dataset used.
 
+
+
+## Project Structure
+
+Main part of File Struture shows below, 
+
+```
+├── compute_cka.py                 # CKA computation module
+├── eigen_analysis.ipynb           # Principal component analysis; reproduces Figure 3
+├── eigen_intervene.ipynb          # Principal component removal analysis; reproduces Figure 4
+├── corr_evaluation.ipynb          # Computes correlation between loss terms and representation dynamics
+├── llama2
+│   ├── cka.sh                     # Calculates CKA for a given model on the assigned dataset
+│   ├── compute_cka.py
+│   ├── configs
+│   ├── convert.sh                 # Converts FSDP-trained models to Hugging Face format
+│   ├── finetuned_models           # Stores fine-tuned models
+│   ├── finetuning.py              # Model fine-tuning code
+│   ├── ft_datasets
+│   ├── model_cka
+│   │   └── Llama-2-7b-chat-hf
+│   ├── policies
+│   ├── prune_inference.py         # Layer substitution for loss reduction analysis
+│   ├── requirements.txt
+│   ├── run.sh                     # Model training script
+│   ├── run_cka.py  
+│   ├── safety_evaluation
+│   │   └── llamadolly-7b
+│   ├── store_activation.py        # Stores activations by layer for given data and model
+│   └── utils ...
+├── llama3 ...
+└── phi ...
+```
+
+### Requirements
+
+The key package versions used in our code are as follows:
+
+```
+transformers==4.51.3
+pytorch-cuda=12.1
+accelerate==0.34.2
+torch==2.6.0
+```
+
+
+
 ## Data-oblivious Critical Layers & Representation Dynamics
 
-### Critical Layers Identified during Supervised Fine-Tuning
+#### Critical Layers Identified during Supervised Fine-Tuning
 We identify the critical layers during Supervised Fine-Tuning (SFT) by substituting each layer in the fine-tuned model with its corresponding layer from the pre-fine-tuned model, and then measuring the loss reduction of the model during SFT for each layer. High values here indicate that the layer is more sensitive during the fine-tuning steps.
 
 <img src="docs/static/images/loss_visualization/llama7b_dolly_updated.png" alt="Llama-2-7b's Loss reduction by layer on Dolly dataset" style="zoom:50%;" />
@@ -54,7 +101,7 @@ An example output substituting around the 16th layer is provided in `./llama2/sa
 
 
 
-### Representation Dynamics of the Pre-fine-tuned Models
+#### Representation Dynamics of the Pre-fine-tuned Models
 
 We also observe that these CKA patterns and the **change-point layers** are independent of the data used to compute CKA, and are instead determined by the pre-fine-tuned model state.
 
@@ -70,7 +117,7 @@ in the `./llama2` directory. We also provide some example visualizations of the 
 
 
 
-### Correlation
+#### Correlation
 
 To check the correlation between  $\mathcal{L}\left(\mathcal{D}_{\text {test }}, \tilde{\boldsymbol{\theta}} / L_{\text {local }}^{\ell}\right)$ with representation term $\delta^{\ell}$, please execute the `./corr_evaluation.ipynb` notebook to load the results of the CKA calculation and loss in each layer. Then, calculate the corresponding rank correlation.
 
@@ -99,7 +146,21 @@ Additionally, refer to `eigen_intervene.ipynb` for implementing the principal co
 
 ## Finetuning
 
-For model finetuning, we have built upon the official Llama2 finetuning guidelines ([llama-recipes](https://github.com/facebookresearch/llama-recipes)) with adaptive changes for the Phi/Llama3 model.
+For model fine-tuning, we build upon the official LLaMA 2 fine-tuning guidelines provided by [llama-recipes](https://github.com/facebookresearch/llama-recipes), with adaptive modifications for Phi and LLaMA 3 models. To directly run the fine-tuning code, please refer to the `run.sh` script located in the corresponding model’s folder.
+
+An example command is shown below:
+
+```bash
+torchrun --nnodes 1 --nproc_per_node 6 finetuning.py \
+--batch_size_training 32 --lr 2e-5 \
+--gradient_accumulation_steps 1 --weight_decay 0 \
+--num_epochs 1 \
+--dataset alpaca_dataset \
+--enable_fsdp \
+--model_name meta-llama/Llama-2-13b-chat-hf --pure_bf16 \
+--dist_checkpoint_root_folder finetuned_models/ 
+--dist_checkpoint_folder alpaca-13b-2e-5 \
+```
 
 
 
