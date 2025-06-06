@@ -223,9 +223,9 @@ We further apply these findings to two practical scenarios: efficient domain ada
     <div class="columns is-centered">
       <div class="column">
         <div class="content">
-          <h2 class="title is-3">Background</h2>
+          <h2 class="title is-3">Intro</h2>
           <p>
-            Large language models (LLMs) are remarkably good at generating and understanding text, yet we still know little about how their internal layers process information. Previous work typically identifies "important" layers only after a model has been fine-tuned on a particular dataset, making these findings inherently post-hoc and dataset-specific. But are critical layers an intrinsic property of the model, independent of specific data? If so, can we predict a model's future training behavior from its current state alone?
+           LLMs are remarkably good at generating and understanding text, yet we still know little about how their internal layers process information. Previous work typically identifies "important" layers only after a model has been fine-tuned on a particular dataset, making these findings inherently post-hoc and dataset-specific. But are critical layers an intrinsic property of the model, independent of specific data? If so, can we predict a model's future training behavior from its current state alone?
           </p>
           
           <p>
@@ -234,10 +234,10 @@ We further apply these findings to two practical scenarios: efficient domain ada
           
 
 
-          <h2 class="title is-3">Data-oblivious Critical Layers & Representation Dynamics</h2>
+          <h2 class="title is-4">Data-oblivious Critical Layers & Representation Dynamics</h3>
 
 
-          <h3 class="title is-4">Critical Layers Identified during Supervised Fine-Tuning.</h3>
+          <h3 class="title is-5">Critical Layers Identified during Supervised Fine-Tuning.</h5>
           <p>
             We identify the critical layers during Supervised Fine-Tuning (SFT) by substituting each layer in the fine-tuned model with its corresponding layer from the pre-fine-tuned model, and then measure the loss reduction of the model during SFT for each layer. High values here indicates that the layer is more sensitive in the fine-tuning steps.
           </p>
@@ -257,7 +257,7 @@ We further apply these findings to two practical scenarios: efficient domain ada
             We find that the same model shows a <span style="color: #f11313;"><b>very similar pattern</b></span> in the loss curves across different datasets (high values in the middle layers, low values in the last layer), which indicates that the critical layer is determined by the pre-fine-tuned model and is independent of the fine-tuning dataset.
           </p>
 
-          <h3 class="title is-4">Representation Dynamics of the Pre-fine-tuned Models</h3>
+          <h3 class="title is-5">Representation Dynamics of the Pre-fine-tuned Models</h4>
           <p>
             Centered Kernel Alignment (CKA) is a popular metric for measuring the similarity between two representation spaces. We use it to quantitatively describe changes in the representation space between layer $\ell$ and its neighboring layers, using the average CKA value, denoted as $\delta^{\ell}$. A smaller $\delta^{\ell}$ indicates a greater representation shift at layer $\ell$ relative to its neighbors. Layers with the largest shifts are called <span class="CPLayer">change-point layers</span>.
           </p>
@@ -272,7 +272,7 @@ We further apply these findings to two practical scenarios: efficient domain ada
             We also observe that these CKA patterns and the <span class="CPLayer">change-point layers</span> are independent of the data used to compute CKA, and are instead determined by the pre-fine-tuned model state.
           </p>
 
-          <h3 class="title is-4">Connect Critical Layers with Representation Dynamics</h3>
+          <h3 class="title is-5">Connect Critical Layers with Representation Dynamics</h4>
           <p>
             From the figure above, we can also observe an interesting phenomenon that average CKA $\delta^{\ell}$ is negatively correlated with the tracked loss value after SFT. This trend is consistent with a high negative correlation coefficient across different models and datasets.         
           </p>
@@ -294,13 +294,12 @@ We further apply these findings to two practical scenarios: efficient domain ada
   </div>
 </section>
 
-
 <section class="section">
       <div class="container is-max-desktop">
         <div class="columns is-centered">
           <div class="column">
             <div class="content">
-              <h2 class="title is-3">Spectral Analysis of Representations</h2>
+              <h2 class="title is-4">Spectral Analysis of Representations</h3>
               <p>
                 Having established that <span class="RepE"><b>Representation Dynamics</b></span> correlate with subsequent training behavior, and knowing that CKA is closely related to spectral properties, we investigate two key questions:
               </p>
@@ -310,7 +309,7 @@ We further apply these findings to two practical scenarios: efficient domain ada
                 <li><strong>Q2: What semantic information is encoded in the Principal Components?</strong></li>
               </ul>
     
-              <h3 class="title is-4">Principal Components Explaining <span class="RepE"><b>Representation Dynamics</b></span></h3>
+              <h3 class="title is-5">Principal Components Explaining <span class="RepE"><b>Representation Dynamics</b></span></h4>
                 <p>
                   We analyze how representation spaces evolve across layers by examining changes in their principal components using Canonical Correlation Analysis (CCA).
                 </p>
@@ -326,7 +325,7 @@ We further apply these findings to two practical scenarios: efficient domain ada
 
 
 
-              <h3 class="title is-4">Semantic Information in Principal Components</h3>
+              <h3 class="title is-5">Semantic Information in Principal Components</h4>
 
               <p>
                 We also investigate the semantic information encoded in the principal components by removing them at <span class="CPLayer">change-point layers</span> and observing how the model's output changes.
@@ -339,27 +338,23 @@ We further apply these findings to two practical scenarios: efficient domain ada
               <p>
                 We find that the top-3 principal components at critical layers (which cause representation shifts) play a key role in summarizing rationales to derive conclusions during reasoning. In contrast, other principal components are primarily associated with formatting and template-related aspects.
               </p>
-
-
             </div>
           </div>
         </div>
       </div>
 </section>
 
-
-
 <section class="section">
   <div class="container is-max-desktop">
     <div class="columns is-centered">
       <div class="column">
         <div class="content">
-          <h2 class="title is-3">Applications of Critical Layers</h2>
+          <h2 class="title is-4">Applications of Critical Layers</h3>
           <p>
             Finally, we present two key applications of identifying data-oblivious critical layers:
           </p>
 
-          <h3 class="title is-4">Efficient Domain Adaptation</h3>
+          <h3 class="title is-5">Efficient Domain Adaptation</h4>
           <div class="content has-text-justified">
             <p>
               Critical layers can be leveraged for efficient domain adaptation when fine-tuning is restricted to a subset of layers due to resource constraints. We find that fine-tuning only the critical layers leads to faster loss decrease compared to fine-tuning non-critical layers.
@@ -378,7 +373,7 @@ We further apply these findings to two practical scenarios: efficient domain ada
           <div style="margin-top: 0.3em; font-size: 0.95em; text-align: center;"><em>Test loss curves for fine-tuning LLaMA-2-7B-Chat on the Dolly and OpenBookQA datasets by training only the critical layers, only the non-critical layers, or the full model</em></div>
 
 
-        <h3 class="title is-4">Targeted Defense Against Backdoor Attacks</h3>
+        <h3 class="title is-5">Targeted Defense Against Backdoor Attacks</h4>
         <div class="content has-text-justified">
           <p>
             Model robustness can be improved by preventing harmful information from adapting the critical layers. We find that freezing the critical layers leads to a significant reduction in attack success rates when the model faces backdoor attacks.
