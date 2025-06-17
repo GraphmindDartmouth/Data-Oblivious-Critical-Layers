@@ -269,8 +269,15 @@ We further apply these findings to two practical scenarios: efficient domain ada
           </div>
           <div style="margin-top: 0.3em; font-size: 0.95em; text-align: center;"><em>Llama-3.1-8B's CKA similarity and average CKA $\delta^{\ell}$ by layer on BoolQ and Dolly datasets</em></div>
           <p>
-            We also observe that these CKA patterns and the <span class="CPLayer">change-point layers</span> are independent of the data used to compute CKA, and are instead determined by the pre-fine-tuned model state.
+            We also observe that these CKA patterns and the <span class="CPLayer">change-point layers</span> are independent of the data used to compute CKA and are instead determined by the pre-fine-tuned model state. For example, the CKA patterns of LLaMA2-7B-Chat are very similar, with the same <span class="CPLayer">change-point layers</span> at layers from the 8th to the 14th.
           </p>
+
+          <div class="has-text-centered" style="margin-top: 0;">
+            <img src="./static/images/combined_res.png" alt="negative correlation table" style="max-width: 80%; height: auto; display: block; margin-left: auto; margin-right: auto;" />
+          </div>
+          <div style="margin-top: 0.3em; font-size: 0.95em; text-align: center;"><em>Different datasets exhibit a consistent pattern in average CKA $\delta^{\ell}$ on the LLaMA2-7B-Chat model, suggesting its data-invariant property. </em></div>
+
+        
 
           <h3 class="title is-5">Connect Critical Layers with Representation Dynamics</h4>
           <p>
@@ -315,7 +322,7 @@ We further apply these findings to two practical scenarios: efficient domain ada
                 </p>
 
                 <div class="column has-text-centered">
-                  <img src="./static/images/combined_res.png" alt="Top3 CCA Visualization" style="max-width: 100%; height: auto; background: transparent;">
+                  <img src="./static/images/svcca.jpg" alt="Top3 CCA Visualization" style="max-width: 100%; height: auto; background: transparent;">
                   <div style="margin-top: 0.3em; font-size: 0.95em;"><em>Average CCA values of the top-K principal components across layers in the LLaMA2-7B-Chat model on the Dolly dataset</em></div>
                 </div>
                 <p>
